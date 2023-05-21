@@ -1,4 +1,4 @@
-# MERN Authentication Starter
+# Social Learn: Social media for learning
 
 This is a social learn app build using the MERN stack. The frontend is build for a SPA (Single Page Application) workflow that uses the [Vite](https://vite.dev) Build tool.
 
