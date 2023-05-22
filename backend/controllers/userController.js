@@ -47,6 +47,8 @@ const authUser = asyncHandler(async (req, res) => {
     const { email, password } = req.body;
 
     const user = await User.findOne({ email })
+            .populate('following', '_id name')
+            .populate('followers', '_id name')
     
     if(user && (await user.matchPassword(password))){
 
@@ -82,7 +84,9 @@ const logoutUser = (req, res) => {
 // @route   GET /api/users/profile
 // @access  Private
 const getUserProfile = asyncHandler(async (req, res) => {
-  const user = await User.findById(req.user._id);
+  const user = await User.findById(req.user._id)
+              .populate('following', '_id name')
+              .populate('followers', '_id name');
 
   if (user) {
     res.json({
@@ -92,6 +96,34 @@ const getUserProfile = asyncHandler(async (req, res) => {
       description: user.description,
       photo: user.photo,
       createdAt: user.createdAt,
+      following: user.following,
+      followers: user.followers,
+    });
+  } else {
+    res.status(404);
+    throw new Error('User not found');
+  }
+});
+
+
+// @desc    Get user profile
+// @route   GET /api/users/:userId
+// @access  Public
+const getUser = asyncHandler(async (req, res) => {
+  const user = await User.findById(req.params.userId)
+              .populate('following', '_id name')
+              .populate('followers', '_id name');
+
+  if (user) {
+    res.json({
+      _id: user._id,
+      name: user.name,
+      email: user.email,
+      description: user.description,
+      photo: user.photo,
+      createdAt: user.createdAt,
+      following: user.following,
+      followers: user.followers,
     });
   } else {
     res.status(404);
@@ -172,6 +204,57 @@ const deleteMyProfile = asyncHandler(async (req, res) => {
   }
 });
 
+// @desc    follow a user profile
+// @route   PUT /api/users/follow
+// @access  Private
+const addFollowing = asyncHandler(async (req, res) => {
+    const user = await User.findById(req.body.followId)
+    if(!user){
+       res.status(404);
+    throw new Error('User not found');
+    }
+    // update my following lists
+    const followAUser = await User.findByIdAndUpdate(req.user._id, { $push: {following: req.body.followId}}, { new: true})
+
+    // update the user am following, his followers lists
+   const updateUserFollowers = await User.findByIdAndUpdate(user._id, 
+    { $push: { followers: req.body.userId}}, { new: true})
+
+    if(!followAUser && !updateUserFollowers){
+      res.status(400);
+    throw new Error('Operation Fail');
+    } 
+  return res.json({
+      message: 'Follow was successful'
+    })  
+})
+
+// @desc    unfollow a user profile
+// @route   PUT /api/users/unfollow
+// @access  Private
+
+const removeFollowing = asyncHandler( async (req, res) => {
+    const user = await User.findById(req.body.followId)
+    if(!user){
+       res.status(404);
+    throw new Error('User not found');
+    }
+   // remove him from my following list
+    const removeHimFromMyFollowList = await User.findByIdAndUpdate(req.user._id, { $pull: {following: req.body.followId}})
+  
+    // remove me from his followers list
+   const removeMeFromHisFollowersList = await User.findByIdAndUpdate(user._id, 
+    { $pull: { followers: req.body.userId}}) 
+  
+   if(!removeHimFromMyFollowList && !removeMeFromHisFollowersList){
+      res.status(400);
+    throw new Error('Operation Fail');
+    } 
+  return res.json({
+      message: ' Unfollow was successful'
+    }) 
+
+})
 
 
 export {
@@ -181,7 +264,10 @@ export {
   getUserProfile,
   updateUserProfile,
   deleteMyProfile,
-  getAllUsers
+  getAllUsers,
+  addFollowing,
+  removeFollowing,
+  getUser,
 };
 
 

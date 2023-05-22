@@ -15,6 +15,9 @@ const authSlice = createSlice({
       state.userInfo = action.payload
       localStorage.setItem('userInfo', JSON.stringify(action.payload))
     },
+    setUsers: (state, action) => {
+      state.users = action.payload
+    },
    // eslint-disable-next-line no-unused-vars
    logout: (state, action) => {
       state.userInfo = null;
@@ -23,6 +26,6 @@ const authSlice = createSlice({
   }
 })
 
-export const { setCredentials, logout } = authSlice.actions;
+export const { setCredentials, setUsers, logout } = authSlice.actions;
 
 export default authSlice.reducer;
