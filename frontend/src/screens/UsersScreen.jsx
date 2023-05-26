@@ -1,6 +1,6 @@
 
 import { useEffect, useState } from 'react';
-import { Table } from 'react-bootstrap';
+import { Button, Table } from 'react-bootstrap';
 import { useDispatch } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import Loader from '../components/Loader';
@@ -55,7 +55,7 @@ const UsersScreen = () => {
                 <td>{user._id}</td>
                 <td>{user.name}</td>
                 <td>{user.email}</td>
-                 <LinkContainer to={`/user/${user._id}`}><td>View Profile</td></LinkContainer>
+                <Button className='btn btn-success'> <LinkContainer to={`/users/${user._id}`}><td>View Profile</td></LinkContainer></Button>
               </tr>
             ))}
           </tbody>

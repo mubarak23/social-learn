@@ -43,10 +43,11 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
     }),
     getUser: builder.mutation({
-      query: (data) => ({
-        url: `${USERS_URL}/${data.userId}`,
+      query: (userId) => ({
+        url: `${USERS_URL}/${userId}`,
         method: 'GET'
       }),
+      keepUnusedDataFor: 5,
     }),
     followUser: builder.mutation({
       query: (data) => ({
@@ -74,7 +75,8 @@ export const {
   useAllUsersMutation,
   useFollowUserMutation,
   useUnfollowUserMutation,
-  useGetUserMutation
+  useGetUserMutation,
+ //  useGetUserDetailsMutation,
 } = usersApiSlice;
 
 

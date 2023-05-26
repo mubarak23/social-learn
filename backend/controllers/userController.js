@@ -60,6 +60,8 @@ const authUser = asyncHandler(async (req, res) => {
       description: user.description,
       photo: user.photo,
       createdAt: user.createdAt,
+       following: user.following,
+      followers: user.followers,
     });
 
     }else {

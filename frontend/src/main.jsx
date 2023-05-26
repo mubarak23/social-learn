@@ -1,5 +1,4 @@
 import 'bootstrap/dist/css/bootstrap.min.css';
-import React from 'react';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import {
@@ -27,10 +26,10 @@ const router = createBrowserRouter(
       <Route path='/login' element={<LoginScreen />} />
       <Route path='/register' element={<RegisterScreen />} />
       <Route path='/users' element={<UsersScreen />} />
+      <Route path='/users/:userId' element={<UserScreen />} />
       <Route path='' element={<PrivateRoute />}>
       <Route path='/profile' element={<ProfileScreen />} />
       <Route path='/edituser' element={<EditProfileScreen />} />
-      <Route path='/user/:userId' element={<UserScreen />} />
       </Route>
     </ Route>
   )
@@ -38,8 +37,6 @@ const router = createBrowserRouter(
 
 ReactDOM.createRoot(document.getElementById('root')).render(
   <Provider store={store}>
-    <React.StrictMode>
      <RouterProvider router={router} />
-  </React.StrictMode>
   </Provider>
 )
