@@ -51,7 +51,7 @@ const EditProfileScreen = () => {
     } else {
        const data = new FormData()
       data.append("my_file", file)
-      const response = await axios.post("http://localhost:5000/api/upload", data);
+      const response = await axios.post("http://localhost:5050/api/upload", data);
       if (response){
         console.log(response.data)
           try {

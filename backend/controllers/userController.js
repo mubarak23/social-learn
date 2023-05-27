@@ -247,7 +247,7 @@ const removeFollowing = asyncHandler( async (req, res) => {
   
     // remove me from his followers list
    const removeMeFromHisFollowersList = await User.findByIdAndUpdate(user._id, 
-    { $pull: { followers: req.body.userId}}) 
+    { $pull: { followers: req.user._id}}) 
   
    if(!removeHimFromMyFollowList && !removeMeFromHisFollowersList){
       res.status(400);
