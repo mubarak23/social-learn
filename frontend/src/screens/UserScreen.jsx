@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Button, Col, Container, Row } from 'react-bootstrap';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useNavigate, useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
-import { useFollowUserMutation, useGetUserMutation } from '../slices/usersApiSlice';
+import { useFollowUserMutation, useGetUserMutation, useUnfollowUserMutation } from '../slices/usersApiSlice';
 const UserScreen = () => {
   const [err, setErr] = useState(null)
   const [user, setUser] = useState()
@@ -13,7 +13,7 @@ const UserScreen = () => {
    
    const { userId } = useParams()
 
-   console.log(userId)
+  const { userInfo } = useSelector((state) => state.auth);
 
 
     const dispatch = useDispatch();
@@ -23,13 +23,12 @@ const UserScreen = () => {
     
     const [getUser, { isLoading }] = useGetUserMutation(userId)
      const [followUser] = useFollowUserMutation();
+     const [unfollowUser] = useUnfollowUserMutation()
 
     useEffect(() => {
-     console.log('Demo Data')
     const fetchData = async () => {
           try {
             const data = await getUser(userId).unwrap()
-            console.log('Are we here')
             console.log(data)
             setUser(data)
             setNowLoading(false)
@@ -54,17 +53,19 @@ const UserScreen = () => {
         toast.error(err?.data?.message || err.error);
       }
     }
-    const handleDeleteAccount = async () => {
+
+     const handleUnFollowUser = async () => {
       try {
-        await deleteMyAccount().unwrap()
-        dispatch(logout())
-         toast.success('Account Deleted Successfully');
-        navigate('/register')
+        const body = {
+          followId: user._id
+        }
+        await unfollowUser(body).unwrap()
+         toast.success('Unfollowered');
       } catch (err) {
         toast.error(err?.data?.message || err.error);
       }
     }
-
+   
 
 
   return (
@@ -86,16 +87,24 @@ const UserScreen = () => {
            <p><span className="glyphicon glyphicon-earphone one" ></span>+91 90000 00000</p>
             <p><span className="glyphicon glyphicon-envelope one" ></span>{user.email}</p>
             <p><span className="glyphicon glyphicon-map-marker one" ></span>{user.description}</p>
-           <p><span className="glyphicon glyphicon-new-window one" ></span>{user.email}</p>
+            <p>Following: {user.following ? user.following.length : 0 }</p>
+            <p>Followers: {user.followers ? user.followers.length : 0 }</p>
            <hr/>
            <Button variant="primary" onClick={handleFollowUser}>Follow</Button>
-           <Button variant="primary"  className=" mx-3">Unfollow</Button>
+           <Button variant="primary" onClick={handleUnFollowUser} className=" mx-3">Unfollow</Button>
         </Col>   
         <Col xs={6} md={4} >
           <br/>
-           <LinkContainer to='/edituser'>
+          {userInfo._id === user._id ? (
+             <LinkContainer to='/edituser'>
            <Button variant="primary">Edit Profile</Button>
             </LinkContainer>
+          ): 
+          (
+            <h3>Login to Edit</h3>
+          )
+          }
+          
         </Col> 
           
           </Row>

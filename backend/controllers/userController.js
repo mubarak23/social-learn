@@ -217,10 +217,11 @@ const addFollowing = asyncHandler(async (req, res) => {
     }
     // update my following lists
     const followAUser = await User.findByIdAndUpdate(req.user._id, { $push: {following: req.body.followId}}, { new: true})
-
+  
     // update the user am following, his followers lists
-   const updateUserFollowers = await User.findByIdAndUpdate(user._id, 
-    { $push: { followers: req.body.userId}}, { new: true})
+  
+    const updateUserFollowers = await User.findByIdAndUpdate(user._id, 
+    { $push: { followers: req.user._id}}, { new: true})
 
     if(!followAUser && !updateUserFollowers){
       res.status(400);
