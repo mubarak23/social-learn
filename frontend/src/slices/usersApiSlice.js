@@ -55,6 +55,13 @@ export const usersApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
+     getMyProfile: builder.mutation({
+      query: () => ({
+        url: `${USERS_URL}/profile`,
+        method: 'GET'
+      }),
+      keepUnusedDataFor: 5,
+    }),
     followUser: builder.mutation({
       query: (data) => ({
         url: `${USERS_URL}/follow`,
@@ -82,7 +89,8 @@ export const {
   useFollowUserMutation,
   useUnfollowUserMutation,
   useGetUserMutation,
-  useFindPeopleMutation
+  useFindPeopleMutation,
+  useGetMyProfileMutation
 } = usersApiSlice;
 
 

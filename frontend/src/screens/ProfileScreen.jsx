@@ -1,17 +1,22 @@
 import { useEffect, useState } from 'react';
 import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
+import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
-import { useFindPeopleMutation } from '../slices/usersApiSlice';
+import { useFindPeopleMutation, useFollowUserMutation, useGetMyProfileMutation } from '../slices/usersApiSlice';
 
 const ProfileScreen = () => {
   const [peoples, setPeople] = useState()
   const [isLoading, setIsLoading] = useState(true)
   const [err, setErr] = useState(null)
-  const [findPeople ] = useFindPeopleMutation()
+  
 
-   
+  const dispatch = useDispatch()
+
+  const [findPeople ] = useFindPeopleMutation()
+  const [followUser] = useFollowUserMutation();
+  const [getMyProfile] = useGetMyProfileMutation()   
     const { userInfo } = useSelector((state) => state.auth);
 
    useEffect(() => {
@@ -30,6 +35,21 @@ const ProfileScreen = () => {
      
   }, [])
 
+  const handleFollowUser = async (userId) => {
+       console.log(userId)
+      try {
+        const body = {
+          followId: userId
+        }
+        await followUser(body).unwrap()
+        const updatedProfile = await getMyProfile().unwrap()
+        toast.success('Followered');
+         dispatch(setCredentials({...updatedProfile}))
+        
+      } catch (err) {
+        toast.error(err?.data?.message || err.error);
+      }
+    }
    
     
 
@@ -70,7 +90,7 @@ const ProfileScreen = () => {
           </Card>
           </Col>
           <Col md={4} xs={6}>
-            <h2>People to Follow</h2>
+            <h3>People to Follow</h3>
             {isLoading ? (
             <Loader />
           ) : err ? (
@@ -78,12 +98,13 @@ const ProfileScreen = () => {
           ) : (
             <div>
           <ListGroup>
+            
             { peoples.filter((user)=> user._id !== userInfo._id).map(person => (
               
               <ListGroup.Item key={person._id}>
                  <Card.Img variant="top"src={person.photo} alt={person.name} roundedCircle width={40} height={40} />
                   <LinkContainer to={`/profile/${person._id}`}><h5>{person.name}</h5></LinkContainer>
-                <Button className='btn btn-primary'>Follow</Button>
+                  <Button className='btn btn-primary' onClick={() => handleFollowUser(person._id)}>Follow</Button> 
               </ListGroup.Item>
             ))}
            

@@ -14,11 +14,13 @@ router.post('/logout', logoutUser);
 router.get('/all', getAllUsers)
 router.get('/findPeoples', protect, findPeoples)
 
+router.get('/profile', protect, getUserProfile)
+
 router.get('/:userId', getUser)
-router
-  .route('/profile')
-  .get(protect, getUserProfile)
-  .put(protect, updateUserProfile)
+
+ 
+router.put('/profile', protect, updateUserProfile)
+
 router.delete('/delete', protect, deleteMyProfile)
 
 router.put('/follow', protect, addFollowing)

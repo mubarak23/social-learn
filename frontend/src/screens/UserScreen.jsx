@@ -1,8 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Button, Card, Col, Container, Row } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import Loader from '../components/Loader';
 import { useFollowUserMutation, useGetUserMutation, useUnfollowUserMutation } from '../slices/usersApiSlice';
@@ -22,8 +22,7 @@ const UserScreen = () => {
   const { userInfo } = useSelector((state) => state.auth);
 
 
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
+  
 
     // eslint-disable-next-line no-unused-vars
     
