@@ -1,84 +1,98 @@
-import { useState } from 'react';
-import { Button, Card, Col, Container, Row } from 'react-bootstrap';
-import { useDispatch, useSelector } from 'react-redux';
+import { useEffect, useState } from 'react';
+import { Button, Card, Col, Container, ListGroup, Row } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
-import { useNavigate } from 'react-router-dom';
-import { toast } from 'react-toastify';
-import { logout } from '../slices/authSlice';
-import { useDeleteMyAccountMutation, useFollowUserMutation } from '../slices/usersApiSlice';
+import Loader from '../components/Loader';
+import { useFindPeopleMutation } from '../slices/usersApiSlice';
 
 const ProfileScreen = () => {
-   const [email, setEmail] = useState('')
-   const [name, setName] = useState('')
-   const [password, setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('');
-
-    const dispatch = useDispatch();
-     const navigate = useNavigate();
+  const [peoples, setPeople] = useState()
+  const [isLoading, setIsLoading] = useState(true)
+  const [err, setErr] = useState(null)
+  const [findPeople ] = useFindPeopleMutation()
 
    
     const { userInfo } = useSelector((state) => state.auth);
 
-    console.log(userInfo)
-
-   //  const [updateProfile, { isLoading }] = useUpdateUserMutation();
-    const [deleteMyAccount] = useDeleteMyAccountMutation();
-    
-  
-
-   const handleDeleteAccount = async () => {
-      try {
-        await deleteMyAccount().unwrap()
-        dispatch(logout())
-         toast.success('Account Deleted Successfully');
-        navigate('/register')
-      } catch (err) {
-        toast.error(err?.data?.message || err.error);
-      }
+   useEffect(() => {
+    const fetchData = async () => {
+          try {
+            const data = await findPeople().unwrap()
+            console.log(data)
+            setPeople(data)
+            setIsLoading(false)
+          } catch (error) {
+            console.log(error)
+            setErr(error)
+          }
     }
+  fetchData()
+     
+  }, [])
 
-     const handleFollowUser = async () => {
-      try {
-        await useFollowUserMutation({
-          
-        }).unwrap()
-         toast.success('Account Deleted Successfully');
-        navigate('/register')
-      } catch (err) {
-        toast.error(err?.data?.message || err.error);
-      }
-    }
+   
     
+
 
   return (
-    <Container>
-      <Card>
-         <Row>
-          <Col xs={6} md={4}>
-          <img src="https://www.svgimages.com/svg-image/s5/man-passportsize-silhouette-icon-256x256.png"  roundedCircle />
-        </Col>
-        <Col xs={6} md={4}>
-          <h2>{userInfo.name}</h2>
-          <hr />
-           <p><span className="glyphicon glyphicon-earphone one" ></span>+91 90000 00000</p>
-            <p><span className="glyphicon glyphicon-envelope one" ></span>{userInfo.email}</p>
-            <p><span className="glyphicon glyphicon-map-marker one" ></span>{userInfo.description}</p>
-           <p><span className="glyphicon glyphicon-new-window one" ></span>{userInfo.email}</p>
-           <hr/>
-           <p>Following: {userInfo.following ? userInfo.following.length: 0 }</p>
-           <p>Followers: {userInfo.followers ? userInfo.followers.length: 0 }</p>
-         
-        </Col>   
-        <Col xs={6} md={4} >
-          <br/>
-           <LinkContainer to='/edituser'>
-           <Button variant="primary">Edit Profile</Button>
-            </LinkContainer>
-          <Button variant="primary" onClick={handleDeleteAccount} className=" mx-3">Delete Account</Button> 
-        </Col> 
-      </Row>
-      </Card>
-    </Container>
+    <Container >
+          <Row className='justify-content-center mt-5'>
+            <Col md={4} xs={6}>
+            <Card.Img variant="top" src={userInfo.photo} height='300' width='250' alt="Profile" />
+          </Col>
+           <Col md={4} xs={6}>
+          <Card>
+            <Card.Body>
+              <Card.Title>User Profile</Card.Title>
+              <Card.Text>
+                <strong>Name:</strong> {userInfo.name}
+              </Card.Text>
+              <Card.Text>
+                <strong>Email:</strong> { userInfo.email}
+              </Card.Text>
+              <Card.Text>
+                <strong>Bio:</strong> { userInfo.description}
+              </Card.Text>
+              <Card.Text>
+                <strong>Following</strong> {userInfo.following ? userInfo.following.length : 0 }
+              </Card.Text>
+              <Card.Text>
+                <strong>Followers:</strong> {userInfo.followers ? userInfo.followers.length : 0 }
+              </Card.Text>
+              
+              <br/>
+              
+                <LinkContainer to='/edituser'>
+              <Button variant="primary" className=" mt-2">Edit Profile</Button>
+                </LinkContainer>
+             
+            </Card.Body>
+          </Card>
+          </Col>
+          <Col md={4} xs={6}>
+            <h2>People to Follow</h2>
+            {isLoading ? (
+            <Loader />
+          ) : err ? (
+              <h3>{err}</h3>
+          ) : (
+            <div>
+          <ListGroup>
+            { peoples.filter((user)=> user._id !== userInfo._id).map(person => (
+              
+              <ListGroup.Item key={person._id}>
+                 <Card.Img variant="top"src={person.photo} alt={person.name} roundedCircle width={40} height={40} />
+                  <LinkContainer to={`/profile/${person._id}`}><h5>{person.name}</h5></LinkContainer>
+                <Button className='btn btn-primary'>Follow</Button>
+              </ListGroup.Item>
+            ))}
+           
+          </ListGroup>
+        </div>
+          ) }
+          </Col>
+          </Row>
+        </Container>
   )
 }
 

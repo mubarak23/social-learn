@@ -42,6 +42,12 @@ export const usersApiSlice = apiSlice.injectEndpoints({
         method: 'GET',
       }),
     }),
+     findPeople: builder.mutation({
+      query: () => ({
+        url: `${USERS_URL}/findPeoples`,
+        method: 'GET',
+      }),
+    }),
     getUser: builder.mutation({
       query: (userId) => ({
         url: `${USERS_URL}/${userId}`,
@@ -76,7 +82,7 @@ export const {
   useFollowUserMutation,
   useUnfollowUserMutation,
   useGetUserMutation,
- //  useGetUserDetailsMutation,
+  useFindPeopleMutation
 } = usersApiSlice;
 
 

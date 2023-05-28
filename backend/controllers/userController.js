@@ -256,9 +256,14 @@ const removeFollowing = asyncHandler( async (req, res) => {
   return res.json({
       message: ' Unfollow was successful'
     }) 
-
 })
 
+const findPeoples = asyncHandler (async (req, res) => {
+  const following = req.user.following
+  const users = await User.find({ _id: { $nin : following } })
+  const userTofollows = users.filter((user) => user._id !== req.user._id)
+   res.json(userTofollows);
+})
 
 export {
   authUser,
@@ -271,6 +276,7 @@ export {
   addFollowing,
   removeFollowing,
   getUser,
+  findPeoples,
 };
 
 
