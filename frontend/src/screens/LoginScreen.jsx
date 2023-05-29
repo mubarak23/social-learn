@@ -28,12 +28,11 @@ const LoginScreen = () => {
 
   const submitHandler = async (e) => {
     e.preventDefault()
-    console.log('We are Here at some point')
 
     try {
       const resLogin = await login({ email, password}).unwrap()
       dispatch(setCredentials({...resLogin}))
-      navigate('/')
+      navigate('/posts')
     } catch (err) {
       toast.error(err?.data?.message || err.error);
     }

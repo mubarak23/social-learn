@@ -7,6 +7,7 @@ import express from 'express';
 import Multer from 'multer';
 import connectDB from './config/db.js';
 import { errorHandler, notFound } from './middleware/errorMiddleaware.js';
+import postRoutes from './routes/postRoutes.js';
 import userRoutes from './routes/userRoutes.js';
 dotenv.config();
 
@@ -58,6 +59,7 @@ app.post("/api/upload", upload.single("my_file"), async (req, res) => {
 });
 
 app.use('/api/users', userRoutes);
+app.use('/api/posts', postRoutes);
 
 
 app.get('/', (req, res) => {

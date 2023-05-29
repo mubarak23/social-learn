@@ -13,6 +13,7 @@ import './index.css';
 import EditProfileScreen from './screens/EditProfile.jsx';
 import HomeScreen from './screens/HomeScreen.jsx';
 import LoginScreen from './screens/LoginScreen.jsx';
+import PostsScreen from './screens/PostsScreen.jsx';
 import ProfileScreen from './screens/ProfileScreen.jsx';
 import RegisterScreen from './screens/RegisterScreen.jsx';
 import UserScreen from './screens/UserScreen.jsx';
@@ -26,10 +27,12 @@ const router = createBrowserRouter(
       <Route path='/login' element={<LoginScreen />} />
       <Route path='/register' element={<RegisterScreen />} />
       <Route path='/users' element={<UsersScreen />} />
+      
       <Route path='/users/:userId' element={<UserScreen />} />
       <Route path='' element={<PrivateRoute />}>
       <Route path='/profile' element={<ProfileScreen />} />
       <Route path='/edituser' element={<EditProfileScreen />} />
+      <Route path='/posts' element={<PostsScreen/>} />
       </Route>
     </ Route>
   )

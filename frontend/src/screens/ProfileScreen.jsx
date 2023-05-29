@@ -17,7 +17,7 @@ const ProfileScreen = () => {
   const [findPeople ] = useFindPeopleMutation()
   const [followUser] = useFollowUserMutation();
   const [getMyProfile] = useGetMyProfileMutation()   
-    const { userInfo } = useSelector((state) => state.auth);
+  const { userInfo } = useSelector((state) => state.auth);
 
    useEffect(() => {
     const fetchData = async () => {
