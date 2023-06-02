@@ -45,6 +45,60 @@ const feedPosts = asyncHandler (async (req, res) => {
 
 })
 
+// @desc     User Posts
+// @route   GET /api/posts/:userId
+// @access  Private
 
-export { createPost, feedPosts };
+const getUserPosts = asyncHandler (async (req, res) => {
+  const posts = await Post.find({ postedBy: req.params.userId})
+                .populate('comments.postedBy', '_id name')
+                .populate('postedBy', '_id name')
+                .sort('-created')
+                .exec()
+     res.json(posts)           
+})
+
+// @desc     Single Post
+// @route   GET /api/posts/:postId
+// @access  public 
+
+const getPostDetails = asyncHandler( async( req, res) => {
+  const post = await Post.findOne({ _id: req.params.postId})
+              .populate('postedBy', '_id name')
+              .exec()
+  if(!post){
+     res.status(404)
+    throw Error('Post Not Found')
+  }
+  res.json(post)
+})
+
+
+// @desc     Delete Post
+// @route     DELETE /api/posts/:postId
+// @access  private
+const deletePost = asyncHandler( async(req, res) => {
+    const post = await post.findOne({ _id: req.params.postId })
+    if(!post){
+      res.status(404)
+      throw Error('Post Does Not Exist')
+    }
+    if(post.postedBy !== req.user._id){
+      res.status(401)
+      throw Error('Can Delete Other User Post')
+    }
+
+    const deletePost = await Post.delete({ _id: post._id})
+
+    if(!deletePost){
+      res.status(400)
+      throw Error('Fail to Delete post, Try Again')
+    }
+  res.status(200).json(true); 
+    
+})
+
+
+
+export { createPost, feedPosts, getUserPosts, getPostDetails, deletePost };
 

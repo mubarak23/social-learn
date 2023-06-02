@@ -17,6 +17,12 @@ export const postsApiSlice = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
+      getUserPosts: builder.query({
+      query: (userId) => ({
+        url: `${POSTS_URL}/${userId}`,
+      }),
+      keepUnusedDataFor: 5,
+    }),
     createPost: builder.mutation({
       query: (data) => ({
         url: `${POSTS_URL}`,
@@ -31,7 +37,8 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 export const {
   useCreatePostMutation,
   useGetPostsFeedQuery,
-  useGetPostDetailsQuery
+  useGetPostDetailsQuery,
+  useGetUserPostsQuery,
   // useGetPostsFeedMutation,
   // useGetPostDetailsMutation,
   // useGetPostsFeed,
