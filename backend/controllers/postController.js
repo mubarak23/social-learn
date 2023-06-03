@@ -63,13 +63,15 @@ const getUserPosts = asyncHandler (async (req, res) => {
 // @access  public 
 
 const getPostDetails = asyncHandler( async( req, res) => {
+  
   const post = await Post.findOne({ _id: req.params.postId})
-              .populate('postedBy', '_id name')
+              .populate('postedBy', '_id name photo')
               .exec()
   if(!post){
      res.status(404)
     throw Error('Post Not Found')
   }
+  
   res.json(post)
 })
 

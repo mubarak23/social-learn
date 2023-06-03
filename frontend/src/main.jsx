@@ -13,6 +13,7 @@ import './index.css';
 import EditProfileScreen from './screens/EditProfile.jsx';
 import HomeScreen from './screens/HomeScreen.jsx';
 import LoginScreen from './screens/LoginScreen.jsx';
+import PostScreen from './screens/PostScreen';
 import PostsScreen from './screens/PostsScreen.jsx';
 import ProfileScreen from './screens/ProfileScreen.jsx';
 import RegisterScreen from './screens/RegisterScreen.jsx';
@@ -33,6 +34,7 @@ const router = createBrowserRouter(
       <Route path='/profile' element={<ProfileScreen />} />
       <Route path='/edituser' element={<EditProfileScreen />} />
       <Route path='/posts' element={<PostsScreen/>} />
+      <Route path='/posts/:postId' element={<PostScreen />} />
       </Route>
     </ Route>
   )

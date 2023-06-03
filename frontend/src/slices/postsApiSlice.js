@@ -11,15 +11,22 @@ export const postsApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor: 5,
       providesTags: ['Posts'],
     }),
-    getPostDetails: builder.query({
+    getPostDetails: builder.mutation({
       query: (postId) => ({
         url: `${POSTS_URL}/${postId}`,
+        method: 'GET'
       }),
       keepUnusedDataFor: 5,
     }),
-      getUserPosts: builder.query({
+    getUserPosts: builder.query({
       query: (userId) => ({
         url: `${POSTS_URL}/${userId}`,
+      }),
+      keepUnusedDataFor: 5,
+    }),
+     deletePost: builder.query({
+      query: (postId) => ({
+        url: `${POSTS_URL}/${postId}`,
       }),
       keepUnusedDataFor: 5,
     }),
@@ -37,11 +44,7 @@ export const postsApiSlice = apiSlice.injectEndpoints({
 export const {
   useCreatePostMutation,
   useGetPostsFeedQuery,
-  useGetPostDetailsQuery,
+  useGetPostDetailsMutation,
   useGetUserPostsQuery,
-  // useGetPostsFeedMutation,
-  // useGetPostDetailsMutation,
-  // useGetPostsFeed,
-  // useGetPostDetails,
-  // useAddPost,
+  useDeletePostQuery
 } = postsApiSlice;
