@@ -4,6 +4,7 @@ import { useSelector } from 'react-redux';
 import { LinkContainer } from 'react-router-bootstrap';
 import { useParams } from 'react-router-dom';
 import Loader from '../components/Loader';
+import Comments from '../components/Posts/Comments';
 import { useGetPostDetailsMutation } from '../slices/postsApiSlice';
 
 const PostScreen = () => {
@@ -64,7 +65,6 @@ const PostScreen = () => {
         )}
       </Card.Body>
       <Card.Footer>
-        {post.like ? (
           <Button
             className='btn btn-success'
             aria-label="Like"
@@ -72,16 +72,7 @@ const PostScreen = () => {
           >
             Like
           </Button>
-        ) : (
-          <Button
-            className='btn btn-success'
-            aria-label="Unlike"
-            variant="secondary"
-          >
-            Unlike
-          </Button>
-        )}
-        <span>{post.comments}</span>
+        <span className='px-2'>{post.likes.length}</span>
         <Button
           className='btn btn-success'
           aria-label="Comment"
@@ -89,7 +80,11 @@ const PostScreen = () => {
         >
           Comment
         </Button>
-        <span>{post.comments.length}</span>
+        <span className='px-2'>{post.comments.length}</span>
+        <hr/>
+        <Comments post={post}
+            comments={post.comments}
+        />
       </Card.Footer>
     </Card>
       )}

@@ -1,5 +1,5 @@
 import express from 'express';
-import { createPost, deletePost, feedPosts, getPostDetails, getUserPosts } from '../controllers/postController.js';
+import { addCommentOnPost, createPost, deletePost, feedPosts, getPostDetails, getUserPosts } from '../controllers/postController.js';
 import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
@@ -14,6 +14,8 @@ router.get('/user/:userId', protect, getUserPosts)
 
 
 router.post('/', protect, createPost)
+
+router.post('/commment', protect, addCommentOnPost)
 
 router.delete('/:postId', deletePost)
 

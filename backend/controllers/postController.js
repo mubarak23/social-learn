@@ -66,6 +66,8 @@ const getPostDetails = asyncHandler( async( req, res) => {
   
   const post = await Post.findOne({ _id: req.params.postId})
               .populate('postedBy', '_id name photo')
+              .populate('comments', '_id postedBy text date')
+              .populate('comments.postedBy', '_id name photo')
               .exec()
   if(!post){
      res.status(404)
@@ -101,6 +103,24 @@ const deletePost = asyncHandler( async(req, res) => {
 })
 
 
+// @desc     Comment On Post
+// @route    DELETE /api/posts/comment
+// @access  private
 
-export { createPost, feedPosts, getUserPosts, getPostDetails, deletePost };
+const addCommentOnPost = asyncHandler ( async (req,  res) => {
+  let comment = req.body.comment;
+  comment.postedBy = req.user_id;
+  let addComment = await Post.Post.findByIdAndUpdate( req.body.postId, 
+        { $push: {comments: comment}}, { new: true})
+        .populate('comments.postedBy', '_id name')
+        .populate('postedBy', '_id name')
+        .exec()
+  if(!addComment){
+      res.status(400)
+      throw Error('Fail to add comment on post, Try Again')
+    }
+  res.status(201).json(addComment);     
+})
+
+export { createPost, feedPosts, getUserPosts, getPostDetails, deletePost, addCommentOnPost };
 

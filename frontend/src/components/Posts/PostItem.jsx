@@ -15,7 +15,7 @@ return (
   <Card className="post bg-white p-1 my-1">
     <Card.Body>
       <div>
-        <Link to={`/profile/${post.postedBy._id}`}>
+        <Link to={`/users/${post.postedBy._id}`}>
           <Image className="round-img" src={post.postedBy.photo} alt="" />
           <h4>{post.postedBy.name}</h4>
         </Link>
