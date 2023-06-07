@@ -108,18 +108,16 @@ const deletePost = asyncHandler( async(req, res) => {
 // @access  private
 
 const addCommentOnPost = asyncHandler ( async (req,  res) => {
-  let comment = req.body.comment;
-  comment.postedBy = req.user_id;
-  let addComment = await Post.Post.findByIdAndUpdate( req.body.postId, 
-        { $push: {comments: comment}}, { new: true})
-        .populate('comments.postedBy', '_id name')
-        .populate('postedBy', '_id name')
-        .exec()
-  if(!addComment){
+  let data = { comment: req.body.comment};
+  data.postedBy = req.user._id;
+  const postComments = await Post.findById(req.body.postId);
+  postComments.comments.push(data)
+  await postComments.save()
+  if(!postComments){
       res.status(400)
       throw Error('Fail to add comment on post, Try Again')
     }
-  res.status(201).json(addComment);     
+  res.status(201).json(postComments);     
 })
 
 export { createPost, feedPosts, getUserPosts, getPostDetails, deletePost, addCommentOnPost };

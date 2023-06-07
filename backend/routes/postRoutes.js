@@ -15,7 +15,7 @@ router.get('/user/:userId', protect, getUserPosts)
 
 router.post('/', protect, createPost)
 
-router.post('/commment', protect, addCommentOnPost)
+router.post('/comment', protect, addCommentOnPost)
 
 router.delete('/:postId', deletePost)
 
