@@ -37,7 +37,7 @@ const feedPosts = asyncHandler (async (req, res) => {
 
   let posts = await Post.find({postedBy:{ $in :
    following }})
-  .populate('comments.postedBy', '_id name following followers')
+  .populate('comments.user', '_id name following followers')
   .populate('postedBy', '_id name')
   .sort('-createdBy')
   .exec()
@@ -51,7 +51,7 @@ const feedPosts = asyncHandler (async (req, res) => {
 
 const getUserPosts = asyncHandler (async (req, res) => {
   const posts = await Post.find({ postedBy: req.params.userId})
-                .populate('comments.postedBy', '_id name')
+                .populate('comments.postedBy', '_id name, photo')
                 .populate('postedBy', '_id name')
                 .sort('-created')
                 .exec()
@@ -66,8 +66,8 @@ const getPostDetails = asyncHandler( async( req, res) => {
   
   const post = await Post.findOne({ _id: req.params.postId})
               .populate('postedBy', '_id name photo')
-              .populate('comments', '_id postedBy text date')
-              .populate('comments.postedBy', '_id name photo')
+              .populate('comments', '_id user photo text date')
+              .populate('comments.user', '_id name photo')
               .exec()
   if(!post){
      res.status(404)
@@ -108,11 +108,21 @@ const deletePost = asyncHandler( async(req, res) => {
 // @access  private
 
 const addCommentOnPost = asyncHandler ( async (req,  res) => {
-  let data = { comment: req.body.comment};
-  data.postedBy = req.user._id;
-  const postComments = await Post.findById(req.body.postId);
-  postComments.comments.push(data)
-  await postComments.save()
+  console.log(req.body)
+  const { text, postId} = req.body;
+
+  const post = await Post.findById(postId);
+   const newComment = {
+        user: req.user._id,
+        text: text,
+        name: req.user.name,
+        avatar: req.user.photo,
+        date: Date.now()
+      };
+      
+    post.comments.push(newComment)
+   const postComments = await post.save()
+
   if(!postComments){
       res.status(400)
       throw Error('Fail to add comment on post, Try Again')

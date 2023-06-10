@@ -1,15 +1,16 @@
 import { Badge, Button, Card, Image } from 'react-bootstrap';
+import { useSelector } from 'react-redux';
 import { Link } from 'react-router-dom';
 import formatDate from '../../utils/formatDate';
 
 const PostItem = (
   {
     key,
-  authUser,
   post,
   }
 ) => {
 
+    const { userInfo } = useSelector((state) => state.auth);
 
 return (
   <Card className="post bg-white p-1 my-1">
@@ -37,7 +38,7 @@ return (
             <span className="comment-count">{post.comments.length}</span>
           )}
         </Link>
-        {!authUser && post.postedBy._id === authUser.user._id && (
+        {!userInfo && post.postedBy._id === userInfo._id && (
           <Button variant="danger">
             <i className="fas fa-times" />
           </Button>
